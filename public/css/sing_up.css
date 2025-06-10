@@ -1,0 +1,62 @@
+html .body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#signup-background {
+    background: rgba(0, 0, 0, 0.7) url("../img/bg_signin.jpg");
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-blend-mode: darken;
+    overflow: hidden;
+}
+
+.sign-up {
+    justify-content: center;
+    text-align: center;
+    height: 30px;
+    width: 200px;
+    margin-top: 0px;
+}
+
+.signup-container {
+    height: 100vh;
+    margin-top: auto;
+    padding: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-wrapper {
+    margin-top: 0px;
+    display: flex;
+    width: 30%;
+    height: 50vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    border-radius: 20px;
+}
+
+select {
+    background-color: white; /* Warna background saat tidak dipilih */
+    color: black; /* Warna teks default */
+}
+
+select option {
+    background-color: white; /* Warna latar belakang dropdown */
+    color: black; /* Warna teks di dropdown */
+}
+
+select option:checked {
+    background-color: #007bff; /* Warna saat dipilih */
+    color: white; /* Teks putih agar kontras */
+}
