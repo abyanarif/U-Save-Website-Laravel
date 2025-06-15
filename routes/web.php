@@ -1,74 +1,48 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\University;
 use Illuminate\Http\Request;
+use App\Models\University;
 use App\Models\User;
+use App\Models\UmrData;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BudgetController;
-use App\Http\Controllers\ArticleController; // Dipindahkan ke atas
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AdminBudgetingController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Public Web & API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-// --- Rute untuk Menampilkan Halaman (Views) ---
+// Rute untuk menampilkan halaman publik
 Route::get('/', function () { return view('index'); });
-Route::get('/laravel', function () { return view('welcome'); });
 Route::get('/home', function () { return view('home'); });
 Route::get('/sign-up', function () { return view('sign_up'); });
 Route::get('/sign-in', function () { return view('sign_in'); });
 Route::get('/budgeting', function () { return view('budgeting'); });
 Route::get('/literasi-keuangan', function () { return view('literasi_keuangan'); });
 Route::get('/profile', function () { return view('profile'); });
-Route::get('/dashboard', function () { return view('admin_dashboard'); });
-Route::get('/edit-profile', function () { return view('edit_profile'); });
-Route::get('/edit-article', function () { return view('edit_article'); }); // Rute baru Anda sudah ada di sini
 
-// --- Rute Fungsional dan API (Non-Grup) ---
+// Rute API publik
+Route::post('/sync-user', [UserController::class, 'syncUser']);
 Route::get('/get-universities', function () {
     return response()->json(University::select('id', 'name')->get());
 });
 
-Route::post('/store-user', function (Request $request) {
-    $validated = $request->validate([
-        'uid' => 'required|string',
-        'email' => 'required|email|unique:users,email',
-        'username' => 'required|string|unique:users,username',
-        'university_id' => 'nullable|exists:universities,id',
-    ]);
-    User::create([
-        'firebase_uid' => $validated['uid'],
-        'username' => $validated['username'],
-        'email' => $validated['email'],
-        'university_id' => $validated['university_id'],
-        'password' => '',
-    ]);
-    return response()->json(['message' => 'User berhasil disimpan'], 201);
-});
+Route::prefix('api')->group(function () {
+    Route::get('/cities', function() {
+        return response()->json(DB::table('cities')->orderBy('nama_kota', 'asc')->pluck('nama_kota'));
+    })->name('api.cities.index');
 
-Route::post('/sync-user', [UserController::class, 'syncUser']);
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// --- Grup Rute API (/api/...) ---
-// Rute API yang sudah ada kita biarkan di dalam grup
-Route::group(['prefix' => 'api'], function () {
-
-    // Rute API untuk Budgeting
     Route::get('/budget', [BudgetController::class, 'show'])->name('api.budget.show');
     Route::post('/budget', [BudgetController::class, 'storeOrUpdate'])->name('api.budget.store');
-
-    // Rute API untuk User Profile
+    
+    Route::get('/articles', [ArticleController::class, 'index'])->name('api.articles.index');
+    Route::get('/articles/{section_id}', [ArticleController::class, 'show'])->name('api.articles.show');
+    
     Route::get('/user-profile', function (Request $request) {
         $firebaseUid = $request->query('firebase_uid');
         if (!$firebaseUid) {
@@ -82,15 +56,59 @@ Route::group(['prefix' => 'api'], function () {
             'username' => $user->username,
             'email' => $user->email,
             'university' => $user->university->name ?? null,
+            'phone' => $user->phone ?? null,
         ]);
     });
-
 });
 
-// --- Rute API untuk Artikel Literasi Keuangan (didefinisikan secara individual) ---
-Route::get('/api/articles', [ArticleController::class, 'index'])->name('articles.index');
-Route::get('/api/articles/{section_id}', [ArticleController::class, 'show'])->name('articles.show');
-// PERHATIAN: Middleware autentikasi admin DIHAPUS SEMENTARA untuk pengujian.
-Route::post('/api/articles/{section_id}', [ArticleController::class, 'update'])->name('articles.update');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes (Struktur Disederhanakan dengan Nama Rute Eksplisit)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('admin')->group(function () {
+
+    // --- Admin View Routes ---
+    Route::get('/dashboard', function () { return view('admin_dashboard'); })->name('admin.dashboard');
+    
+    // Artikel
+    Route::get('/articles', function () { return view('admin_literasi_keuangan'); })->name('admin.articles.index');
+    Route::get('/articles/{section_id}/edit', function ($section_id) { 
+        return view('edit_article', ['section_id' => $section_id]); 
+    })->name('admin.articles.edit');
+    
+    // Budgeting
+    Route::get('/budget', function () { return view('admin_budgeting'); })->name('admin.budgeting.index');
+    Route::get('/budget/categories', function () { return view('admin_budget_categories'); })->name('admin.budgeting.categories');
+    Route::get('/budget/allocations', function () { return view('admin_budget_allocations'); })->name('admin.budgeting.allocations');
+    Route::get('/budget/umr', function () { return view('admin_budget_umr'); })->name('admin.budgeting.umr');
+    
+    // Profile
+    Route::get('/edit-profile', function () { return view('edit_profile'); })->name('admin.profile.edit');
+
+    // --- Admin API Routes ---
+    Route::prefix('api')->group(function() {
+
+        Route::get('/users', [UserController::class, 'getDashboardData'])->name('admin.api.users');
+        Route::post('/articles/{section_id}', [ArticleController::class, 'update'])->name('admin.api.articles.update');
+
+        Route::prefix('budget')->group(function() {
+            Route::get('/categories', [AdminBudgetingController::class, 'getCategories'])->name('admin.api.budget.categories.index');
+            Route::post('/categories', [AdminBudgetingController::class, 'addCategory'])->name('admin.api.budget.categories.store');
+            Route::put('/categories/{id}', [AdminBudgetingController::class, 'updateCategory'])->name('admin.api.budget.categories.update');
+            Route::delete('/categories/{id}', [AdminBudgetingController::class, 'deleteCategory'])->name('admin.api.budget.categories.destroy');
+
+            Route::get('/allocations', [AdminBudgetingController::class, 'getAllocations'])->name('admin.api.budget.allocations.index');
+            Route::put('/allocations/{id}', [AdminBudgetingController::class, 'updateAllocation'])->name('admin.api.budget.allocations.update');
+            
+            Route::get('/umr', [AdminBudgetingController::class, 'getUmrData'])->name('admin.api.budget.umr.index');
+            Route::post('/umr', [AdminBudgetingController::class, 'addUmrData'])->name('admin.api.budget.umr.store');
+            Route::put('/umr/{id}', [AdminBudgetingController::class, 'updateUmrData'])->name('admin.api.budget.umr.update');
+            Route::delete('/umr/{id}', [AdminBudgetingController::class, 'deleteUmrData'])->name('admin.api.budget.umr.destroy');
+        });
+    });
+});
 
 ?>

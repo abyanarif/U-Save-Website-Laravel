@@ -13,25 +13,35 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     * Disesuaikan agar cocok dengan struktur tabel di database Anda.
+     */
     protected $fillable = [
         'firebase_uid',
-        'name',
-        'username',
+        'username', // Tidak ada 'name' di tabel Anda, hanya 'username'
         'email',
-        'password',        // Mungkin opsional jika login murni via Firebase
         'university_id',
+        'phone',
+        'role', // Menambahkan kolom 'role' yang ada di tabel Anda
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     */
     protected $hidden = [
-        'password',
+        // 'password', // Dihapus karena tidak ada kolom password di tabel Anda
         'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast.
+     */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // 'email_verified_at' => 'datetime', // Tidak ada kolom ini di tabel Anda
+            // 'password' => 'hashed', // Tidak ada kolom ini di tabel Anda
         ];
     }
 
@@ -42,15 +52,8 @@ class User extends Authenticatable
     }
 
     // Relasi ke tabel budget_plans
-    // Asumsi satu user memiliki satu budget plan utama
     public function budgetPlan()
     {
         return $this->hasOne(BudgetPlan::class);
     }
-
-    // Jika satu user bisa memiliki banyak budget plan:
-    // public function budgetPlans()
-    // {
-    //     return $this->hasMany(BudgetPlan::class);
-    // }
 }

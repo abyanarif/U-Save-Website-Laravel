@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - U-Save</title>
+    <title>Admin Literasi Keuangan - U-Save</title>
     <!-- Bootstrap 5 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
@@ -15,7 +15,28 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
     />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/admin_literasi_keuangan.css" />
+    <link rel="stylesheet" href="{{ asset('css/admin_literasi_keuangan.css') }}" />
+    <style>
+        .sidebar { 
+            background-color: #f8f9fa; 
+            height: 100vh; 
+            position: sticky; 
+            top: 0; 
+        }
+        /* FIX: Membuat area konten utama menjadi scrollable */
+        .main-content-wrapper {
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .main-content { 
+            padding: 2rem; 
+        }
+        .literacy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
   </head>
   <body>
     <div class="container-fluid">
@@ -24,12 +45,12 @@
         <div class="col-lg-2 sidebar p-0" id="sidebar">
           <div class="d-flex flex-column flex-shrink-0 p-3 h-100">
             <a
-              href="/"
+              href="{{ route('admin.dashboard') }}"
               class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
             >
               <span class="fs-4">
                 <img
-                  src="img/logo.png"
+                  src="{{ asset('img/logo.png') }}"
                   alt="Logo"
                   class="logo"
                 />U-Save
@@ -38,20 +59,15 @@
             <hr />
             <ul class="nav nav-pills flex-column mb-auto">
               <li class="nav-item">
-                <a
-                  href="admin_dashboard.html"
-                  class="nav-link link-dark"
-                  id="dashboardTab"
-                >
+                <a href="{{ route('admin.dashboard') }}" class="nav-link link-dark">
                   <i class="bi bi-speedometer2 me-2"></i>
                   Dashboard
                 </a>
               </li>
               <li class="nav-item">
                 <a
-                  href="#   "
+                  href="{{ route('admin.articles.index') }}"
                   class="nav-link active"
-                  id="literacyTab"
                   aria-current="page"
                 >
                   <i class="bi bi-book me-2"></i>
@@ -60,9 +76,8 @@
               </li>
               <li>
                 <a
-                  href="admin_budgeting.html"
+                  href="{{ route('admin.budgeting.index') }}"
                   class="nav-link link-dark"
-                  id="budgetingTab"
                 >
                   <i class="bi bi-calculator me-2"></i>
                   Budgeting
@@ -78,7 +93,7 @@
                 aria-expanded="false"
               >
                 <img
-                  src="img/photo-profile.jpg"
+                  src="{{ asset('img/photo-profile.jpg') }}"
                   alt=""
                   width="32"
                   height="32"
@@ -87,160 +102,93 @@
                 <strong>Admin</strong>
               </a>
               <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="#">Sign out</a></li>
               </ul>
             </div>
           </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="col-lg-10 main-content" id="mainContent">
-          <h2 class="mb-4">Literasi Keuangan</h2>
-
-          <!-- Financial Literacy Buttons -->
-          <div class="row mb-4">
-            <div class="col-md-4 mb-3">
-              <a
-                href="edit_literacy.html?type=dasar"
-                class="card literacy-card h-100 text-decoration-none"
-              >
-                <div class="card-body text-center">
-                  <i
-                    class="bi bi-journal-bookmark literacy-icon text-primary"
-                  ></i>
-                  <h5 class="literacy-title">Pemahaman Dasar</h5>
-                  <p class="literacy-desc">
-                    Kelola konten literasi keuangan dasar
-                  </p>
+        <!-- FIX: Wrapper untuk Main Content -->
+        <div class="col-lg-10 p-0 main-content-wrapper">
+            <main class="main-content" id="mainContent">
+                <h2 class="mb-4">Literasi Keuangan</h2>
+                <p class="text-muted">Pilih artikel di bawah ini untuk dikelola kontennya.</p>
+                
+                <!-- Financial Literacy Buttons -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <a
+                            href="{{ route('admin.articles.edit', ['section_id' => 'pemahaman-dasar']) }}"
+                            class="card literacy-card h-100 text-decoration-none"
+                        >
+                            <div class="card-body text-center">
+                                <i class="bi bi-journal-bookmark literacy-icon text-primary"></i>
+                                <h5 class="literacy-title">Pemahaman Dasar</h5>
+                                <p class="literacy-desc">
+                                    Kelola konten literasi keuangan dasar
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a
+                            href="{{ route('admin.articles.edit', ['section_id' => 'tabungan']) }}"
+                            class="card literacy-card h-100 text-decoration-none"
+                        >
+                            <div class="card-body text-center">
+                                <i class="bi bi-piggy-bank literacy-icon text-success"></i>
+                                <h5 class="literacy-title">Tabungan & Pinjaman</h5>
+                                <p class="literacy-desc">
+                                    Kelola konten tentang tabungan dan pinjaman
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a
+                            href="{{ route('admin.articles.edit', ['section_id' => 'investasi']) }}"
+                            class="card literacy-card h-100 text-decoration-none"
+                        >
+                            <div class="card-body text-center">
+                                <i class="bi bi-graph-up-arrow literacy-icon text-warning"></i>
+                                <h5 class="literacy-title">Investasi</h5>
+                                <p class="literacy-desc">Kelola konten tentang investasi</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a
+                            href="{{ route('admin.articles.edit', ['section_id' => 'asuransi']) }}"
+                            class="card literacy-card h-100 text-decoration-none"
+                        >
+                            <div class="card-body text-center">
+                                <i class="bi bi-shield-check literacy-icon text-info"></i>
+                                <h5 class="literacy-title">Asuransi</h5>
+                                <p class="literacy-desc">Kelola konten tentang asuransi</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a
+                            href="{{ route('admin.articles.edit', ['section_id' => 'perencanaan']) }}"
+                            class="card literacy-card h-100 text-decoration-none"
+                        >
+                            <div class="card-body text-center">
+                                <i class="bi bi-calendar-check literacy-icon text-danger"></i>
+                                <h5 class="literacy-title">Perencanaan Jangka Panjang</h5>
+                                <p class="literacy-desc">
+                                    Kelola konten perencanaan keuangan
+                                </p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-              </a>
-            </div>
-            <div class="col-md-4 mb-3">
-              <a
-                href="edit_literacy.html?type=tabungan"
-                class="card literacy-card h-100 text-decoration-none"
-              >
-                <div class="card-body text-center">
-                  <i class="bi bi-piggy-bank literacy-icon text-success"></i>
-                  <h5 class="literacy-title">Tabungan & Pinjaman</h5>
-                  <p class="literacy-desc">
-                    Kelola konten tentang tabungan dan pinjaman
-                  </p>
-                </div>
-              </a>
-            </div>
-            <div class="col-md-4 mb-3">
-              <a
-                href="edit_literacy.html?type=investasi"
-                class="card literacy-card h-100 text-decoration-none"
-              >
-                <div class="card-body text-center">
-                  <i
-                    class="bi bi-graph-up-arrow literacy-icon text-warning"
-                  ></i>
-                  <h5 class="literacy-title">Investasi</h5>
-                  <p class="literacy-desc">Kelola konten tentang investasi</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-md-6 mb-3">
-              <a
-                href="edit_literacy.html?type=asuransi"
-                class="card literacy-card h-100 text-decoration-none"
-              >
-                <div class="card-body text-center">
-                  <i class="bi bi-shield-check literacy-icon text-info"></i>
-                  <h5 class="literacy-title">Asuransi</h5>
-                  <p class="literacy-desc">Kelola konten tentang asuransi</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-md-6 mb-3">
-              <a
-                href="edit_literacy.html?type=perencanaan"
-                class="card literacy-card h-100 text-decoration-none"
-              >
-                <div class="card-body text-center">
-                  <i class="bi bi-calendar-check literacy-icon text-danger"></i>
-                  <h5 class="literacy-title">Perencanaan Jangka Panjang</h5>
-                  <p class="literacy-desc">
-                    Kelola konten perencanaan keuangan
-                  </p>
-                </div>
-              </a>
-            </div>
-          </div>
+            </main>
         </div>
       </div>
     </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JavaScript -->
-    <script src="script.js"></script>
-    <script>
-      tinymce.init({
-        selector: "textarea",
-        plugins: [
-          // Core editing features
-          "anchor",
-          "autolink",
-          "charmap",
-          "codesample",
-          "emoticons",
-          "image",
-          "link",
-          "lists",
-          "media",
-          "searchreplace",
-          "table",
-          "visualblocks",
-          "wordcount",
-          // Your account includes a free trial of TinyMCE premium features
-          // Try the most popular premium features until Apr 28, 2025:
-          "checklist",
-          "mediaembed",
-          "casechange",
-          "formatpainter",
-          "pageembed",
-          "a11ychecker",
-          "tinymcespellchecker",
-          "permanentpen",
-          "powerpaste",
-          "advtable",
-          "advcode",
-          "editimage",
-          "advtemplate",
-          "ai",
-          "mentions",
-          "tinycomments",
-          "tableofcontents",
-          "footnotes",
-          "mergetags",
-          "autocorrect",
-          "typography",
-          "inlinecss",
-          "markdown",
-          "importword",
-          "exportword",
-          "exportpdf",
-        ],
-        toolbar:
-          "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-        tinycomments_mode: "embedded",
-        tinycomments_author: "Author name",
-        mergetags_list: [
-          { value: "First.Name", title: "First Name" },
-          { value: "Email", title: "Email" },
-        ],
-        ai_request: (request, respondWith) =>
-          respondWith.string(() =>
-            Promise.reject("See docs to implement AI Assistant")
-          ),
-      });
-    </script>
   </body>
 </html>

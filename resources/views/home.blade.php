@@ -64,7 +64,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script src="/js/firebase-init.js"></script>
-    <script src="/js/authGuard.js"></script>
+    <script type="module" src="/js/firebase-init.js"></script>
+    <script type="module" src="/js/authGuard.js"></script>
 </body>
 </html>

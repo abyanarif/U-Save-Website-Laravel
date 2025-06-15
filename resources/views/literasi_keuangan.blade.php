@@ -184,10 +184,11 @@
       </div>
     </div>
     
-    <script src="js/firebase-init.js"></script>
-    <script src="js/authGuard.js"></script>
+    <!-- FIX: Menambahkan type="module" pada script yang menggunakan import/export -->
+    <script src="js/firebase-init.js" type="module"></script>
+    <script src="js/authGuard.js" type="module"></script>
     <!-- BARU: JavaScript untuk mengambil dan menampilkan artikel secara dinamis -->
-    <!-- Anda bisa membuat file ini di dalam folder js/ Anda -->
-    <script src="js/literasi-dinamis.js"></script>
+    <!-- Pastikan file ini ada di public/js/literasi-dinamis.js -->
+    <script src="js/literasi-dinamis.js" type="module"></script>
   </body>
 </html>
