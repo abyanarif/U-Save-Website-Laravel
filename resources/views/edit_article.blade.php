@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FIX: Tambahkan meta tag untuk CSRF Token (Penting untuk Laravel) -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Edit Artikel Literasi Keuangan</title>
     <!-- Muat TinyMCE dari CDN -->
     <script src="https://cdn.tiny.cloud/1/jea0x5zq1xgq01p1iwsrad0tfmou8hl5hjj2ve8ojokkd0ld/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
@@ -54,7 +56,7 @@
         // Inisialisasi TinyMCE pada textarea
         tinymce.init({
             selector: 'textarea#articleContent',
-            readonly: false, // FIX: Secara eksplisit mengatur editor agar tidak read-only
+            readonly: false,
             plugins: 'lists link image table code help wordcount',
             toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code'
         });
@@ -63,6 +65,8 @@
         const form = document.getElementById('editForm');
         const statusMessage = document.getElementById('statusMessage');
         let currentSectionId = '';
+        
+        const API_BASE_URL = window.location.origin;
 
         // Event listener saat admin memilih artikel dari dropdown
         selector.addEventListener('change', async (e) => {
@@ -73,13 +77,11 @@
             }
 
             try {
-                // Ambil data artikel yang ada dari API
-                const response = await fetch(`/api/articles/${currentSectionId}`);
+                const response = await fetch(`${API_BASE_URL}/api/articles/${currentSectionId}`);
                 if (!response.ok) throw new Error('Gagal memuat artikel.');
                 
                 const article = await response.json();
                 
-                // Isi form dengan data yang ada
                 document.getElementById('articleTitle').value = article.title;
                 document.getElementById('articleImage').value = article.image_url || '';
                 tinymce.get('articleContent').setContent(article.content);
@@ -97,7 +99,6 @@
             statusMessage.textContent = 'Menyimpan...';
             statusMessage.style.color = 'black';
 
-            // Ambil konten dari TinyMCE
             const content = tinymce.get('articleContent').getContent();
             const formData = {
                 title: document.getElementById('articleTitle').value,
@@ -106,14 +107,13 @@
             };
 
             try {
-                // Kirim data yang diperbarui ke API
-                const response = await fetch(`/api/articles/${currentSectionId}`, {
-                    method: 'POST', // Laravel bisa menangani POST untuk update
+                const response = await fetch(`${API_BASE_URL}/api/articles/${currentSectionId}`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        // Jika menggunakan CSRF
-                        // 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        // FIX: Tambahkan header X-CSRF-TOKEN untuk permintaan POST
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: JSON.stringify(formData)
                 });

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema; // FIX: Tambahkan ini
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // FIX: Nonaktifkan foreign key check sebelum seeding
+        Schema::disableForeignKeyConstraints();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Panggil seeder lain yang sudah Anda buat
+        $this->call([
+            ArticleSeeder::class,
+            UniversitySeeder::class,
+            // Anda bisa menambahkan seeder lain di sini jika ada
         ]);
+
+        // Membuat 10 user dummy menggunakan factory yang sudah diperbaiki
+        User::factory(10)->create();
+
+        // FIX: Aktifkan kembali foreign key check setelah seeding selesai
+        Schema::enableForeignKeyConstraints();
     }
 }
