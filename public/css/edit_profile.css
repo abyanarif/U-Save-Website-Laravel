@@ -1,0 +1,172 @@
+/* General Body and Background Styling */
+body.background {
+    background: rgba(0, 0, 0, 0.6) url("../img/bg_signin.jpg");
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: darken;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    margin: 0;
+}
+
+/* Form Container to center the form */
+.form-container {
+    display: flex;
+    align-items: center; /* Memusatkan secara vertikal */
+    justify-content: center; /* Memusatkan secara horizontal */
+    min-height: calc(100vh - 70px); /* Sesuaikan '70px' dengan tinggi navbar Anda */
+    padding: 2rem;
+}
+
+/* The main form card, inspired by your profile page */
+.form-wrapper {
+    width: 100%;
+    max-width: 550px; /* Lebar yang ideal untuk form */
+    background-color: rgba(17, 25, 40, 0.75); /* Background gelap transparan seperti di profile */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    padding: 2.5rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-wrapper h2 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.form-wrapper p {
+    text-align: center;
+    color: #ccc;
+    margin-bottom: 2rem;
+}
+
+/* Input Group Styling */
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #ddd;
+}
+
+.input-group label i {
+    margin-right: 8px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #fff;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+}
+
+/* FIX: Menambahkan gaya untuk dropdown list agar sesuai dengan tema gelap */
+/* Catatan: Beberapa browser (terutama di Windows) mungkin tidak sepenuhnya mendukung penggantian gaya pada daftar dropdown. */
+/* Ini adalah upaya terbaik untuk memberikan gaya yang konsisten. */
+.input-group select option {
+    background: #2c3e50; /* Warna latar belakang gelap untuk setiap pilihan */
+    color: #ecf0f1;      /* Warna teks terang */
+}
+
+.input-group input::placeholder {
+    color: #aaa;
+    opacity: 1;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #3498db;
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+
+.input-group input[disabled] {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: not-allowed;
+    color: #999;
+}
+
+/* Password Note */
+.password-note {
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: left !important;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem !important;
+    color: #ccc;
+}
+
+/* Button Styling */
+.btn-save {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+/* Status Message */
+.status-message {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 8px;
+}
+.status-message.success {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+.status-message.error {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+/* Spinner for Loading */
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #3498db;
+    animation: spin 1s ease infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

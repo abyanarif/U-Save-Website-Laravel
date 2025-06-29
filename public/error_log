@@ -1,0 +1,1 @@
+[27-Jun-2025 17:25:00 UTC] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home/usaveaci/usave/app/Http/Controllers/BudgetController.php on line 3
